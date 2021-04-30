@@ -4,6 +4,11 @@ import Navi from "./Navi";
 import ProductList from "./ProductList";
 import { Container, Row, Col } from "reactstrap";
 import alertify from "alertifyjs";
+import { Switch, Route } from "react-router-dom";
+import NotFound from "./NotFound";
+import CartList from "./CartList";
+import FormDemo1 from "./FormDemo1";
+import FormDemo2 from "./FormDemo2";
 
 export default class App extends Component {
   state = {
@@ -50,6 +55,7 @@ export default class App extends Component {
   removeFromCart = (product) => {
     let newCart = this.state.cart.filter((c) => c.product.id !== product.id);
     this.setState({ cart: newCart });
+    alertify.error(product.productName + " deleted from cart.");
   };
 
   render() {
@@ -76,12 +82,35 @@ export default class App extends Component {
               ></CategoryList>
             </Col>
             <Col xs="9">
-              <ProductList
-                currentCategory={this.state.currentCategory}
-                info={productInfo}
-                products={this.state.products}
-                addToCart={this.addToCart}
-              ></ProductList>
+              <Switch>
+                <Route
+                  exact
+                  path="/"
+                  render={(props) => (
+                    <ProductList
+                      {...props}
+                      currentCategory={this.state.currentCategory}
+                      info={productInfo}
+                      products={this.state.products}
+                      addToCart={this.addToCart}
+                    ></ProductList>
+                  )}
+                ></Route>
+                <Route
+                  exact
+                  path="/cart"
+                  render={(props) => (
+                    <CartList
+                      {...props}
+                      cart={this.state.cart}
+                      removeFromCart={this.removeFromCart}
+                    ></CartList>
+                  )}
+                ></Route>
+                <Route path="/form1" component={FormDemo1}></Route>
+                <Route path="/form2" component={FormDemo2}></Route>
+                <Route component={NotFound}></Route>
+              </Switch>
             </Col>
           </Row>
         </Container>
